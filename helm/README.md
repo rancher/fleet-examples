@@ -18,5 +18,6 @@ metadata:
   namespace: fleet-local
 spec:
   repo: https://github.com/rancher/fleet-examples/
-  bundleDirs: helm
+  bundleDirs:
+  - helm
 ```
