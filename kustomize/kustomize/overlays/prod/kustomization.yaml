@@ -1,0 +1,5 @@
+resources:
+- ../../base
+patches:
+- frontend-deployment.yaml
+- frontend-service.yaml

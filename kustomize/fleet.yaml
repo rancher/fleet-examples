@@ -1,0 +1,22 @@
+namespace: fleet-kustomize-example
+targets:
+- name: dev
+  clusterSelector:
+    matchLabels:
+      env: dev
+  # NOTE: This directory is always relative to ./kustomize
+  kustomizeDir: overlays/dev
+
+- name: test
+  clusterSelector:
+    matchLabels:
+      env: test
+  # NOTE: This directory is always relative to ./kustomize
+  kustomizeDir: overlays/test
+
+- name: prod
+  clusterSelector:
+    matchLabels:
+      env: prod
+  # NOTE: This directory is always relative to ./kustomize
+  kustomizeDir: overlays/prod

@@ -1,0 +1,5 @@
+resources:
+- ../../base
+patches:
+- redis-slave-deployment.yaml
+- redis-slave-service.yaml
