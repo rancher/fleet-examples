@@ -20,4 +20,19 @@ spec:
   repo: https://github.com/rancher/fleet-examples/
   bundleDirs:
   - helm
+  targets:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+  - name: test
+    clusterSelector:
+      matchLabels:
+        env: test
+
+  - name: prod
+    clusterSelector:
+      matchLabels:
+        env: prod
 ```
