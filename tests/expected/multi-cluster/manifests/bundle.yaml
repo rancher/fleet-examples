@@ -1,0 +1,251 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Bundle
+metadata:
+  name: test
+  namespace: fleet-local
+spec:
+  namespace: fleet-mc-manifest-example
+  resources:
+  - content: |
+      # Manifests Example
+
+      This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application.
+      The app will be deployed into the `fleet-mc-manifest-example` namespace.
+
+      The application will be customized as follows per environment:
+
+      * Dev clusters: Only the redis leader is deployed and not the followers.
+      * Test clusters: Scale the front deployment to 3
+      * Prod clusters: Scale the front deployment to 3 and set the service type to LoadBalancer
+
+      ```yaml
+      kind: GitRepo
+      apiVersion: fleet.cattle.io/v1alpha1
+      metadata:
+        name: manifests
+        namespace: fleet-local
+      spec:
+        repo: https://github.com/rancher/fleet-examples/
+        bundleDirs:
+        - manifests
+        targetCustomizations:
+        - name: dev
+          clusterSelector:
+            matchLabels:
+              env: dev
+
+        - name: test
+          clusterSelector:
+            matchLabels:
+              env: test
+
+        - name: prod
+          clusterSelector:
+            matchLabels:
+              env: prod
+      ```
+    name: README.md
+  - content: |
+      namespace: fleet-mc-manifest-example
+      targets:
+      - name: dev
+        clusterSelector:
+          matchLabels:
+            env: dev
+        yaml:
+          overlays:
+          # Refers to overlays/noreplication folder
+          - noreplication
+
+      - name: test
+        clusterSelector:
+          matchLabels:
+            env: test
+        yaml:
+          overlays:
+          # Refers to overlays/scale3 folder
+          - scale3
+
+      - name: prod
+        clusterSelector:
+          matchLabels:
+            env: prod
+        yaml:
+          # Refers to overlays/servicelb, scale3 folders
+          overlays:
+          - servicelb
+          - scale3
+    name: fleet.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          matchLabels:
+            app: guestbook
+            tier: frontend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: guestbook
+              tier: frontend
+          spec:
+            containers:
+            - name: php-redis
+              image: gcr.io/google-samples/gb-frontend:v4
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 80
+    name: frontend-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: frontend
+        labels:
+          app: guestbook
+          tier: frontend
+      spec:
+        type: NodePort
+        ports:
+        - port: 80
+        selector:
+          app: guestbook
+          tier: frontend
+    name: frontend-service.yaml
+  - name: overlays/noreplication/redis-slave-deployment.yaml
+  - content: |
+      spec:
+        selector:
+          role: master
+    name: overlays/noreplication/redis-slave-service_patch.yaml
+  - content: |
+      spec:
+        replicas: 3
+    name: overlays/scale3/frontend-deployment_patch.yaml
+  - content: |
+      spec:
+        type: LoadBalancer
+    name: overlays/servicelb/frontend-service_patch.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-master
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: master
+            tier: backend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: master
+              tier: backend
+          spec:
+            containers:
+            - name: master
+              image: redis
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: redis-master-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-master
+        labels:
+          app: redis
+          role: master
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+          targetPort: 6379
+        selector:
+          app: redis
+          role: master
+          tier: backend
+    name: redis-master-service.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: slave
+            tier: backend
+        replicas: 2
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: slave
+              tier: backend
+          spec:
+            containers:
+            - name: slave
+              image: gcr.io/google_samples/gb-redisslave:v1
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: redis-slave-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-slave
+        labels:
+          app: redis
+          role: slave
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+        selector:
+          app: redis
+          role: slave
+          tier: backend
+    name: redis-slave-service.yaml
+  targets:
+  - clusterSelector:
+      matchLabels:
+        env: dev
+    name: dev
+    yaml:
+      overlays:
+      - noreplication
+  - clusterSelector:
+      matchLabels:
+        env: test
+    name: test
+    yaml:
+      overlays:
+      - scale3
+  - clusterSelector:
+      matchLabels:
+        env: prod
+    name: prod
+    yaml:
+      overlays:
+      - servicelb
+      - scale3

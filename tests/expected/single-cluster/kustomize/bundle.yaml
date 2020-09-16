@@ -1,0 +1,216 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Bundle
+metadata:
+  name: test
+  namespace: fleet-local
+spec:
+  kustomize: {}
+  namespace: fleet-kustomize-example
+  resources:
+  - content: |
+      # Helm Example
+
+      This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application
+      using kustomize. The app will be deployed into the `fleet-kustomize-example` namespace.
+
+      ```yaml
+      kind: GitRepo
+      apiVersion: fleet.cattle.io/v1alpha1
+      metadata:
+        name: kustomize
+        namespace: fleet-local
+      spec:
+        repo: https://github.com/rancher/fleet-examples/
+        paths:
+        - single-cluster/kustomize
+      ```
+    name: README.md
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          matchLabels:
+            app: guestbook
+            tier: frontend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: guestbook
+              tier: frontend
+          spec:
+            containers:
+            - name: php-redis
+              image: gcr.io/google-samples/gb-frontend:v4
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 80
+    name: base/frontend-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: frontend
+        labels:
+          app: guestbook
+          tier: frontend
+      spec:
+        type: NodePort
+        ports:
+        - port: 80
+        selector:
+          app: guestbook
+          tier: frontend
+    name: base/frontend-service.yaml
+  - content: |
+      resources:
+      - frontend-deployment.yaml
+      - frontend-service.yaml
+      - redis-master-deployment.yaml
+      - redis-master-service.yaml
+      - redis-slave-deployment.yaml
+      - redis-slave-service.yaml
+    name: base/kustomization.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-master
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: master
+            tier: backend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: master
+              tier: backend
+          spec:
+            containers:
+            - name: master
+              image: redis
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: base/redis-master-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-master
+        labels:
+          app: redis
+          role: master
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+          targetPort: 6379
+        selector:
+          app: redis
+          role: master
+          tier: backend
+    name: base/redis-master-service.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: slave
+            tier: backend
+        replicas: 2
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: slave
+              tier: backend
+          spec:
+            containers:
+            - name: slave
+              image: gcr.io/google_samples/gb-redisslave:v1
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: base/redis-slave-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-slave
+        labels:
+          app: redis
+          role: slave
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+        selector:
+          app: redis
+          role: slave
+          tier: backend
+    name: base/redis-slave-service.yaml
+  - content: |
+      # This file and all contents in it are OPTIONAL.
+
+      # The default namespace to apply to resources that are namespaced
+      # but do not specify a namespace.  In this example no resources
+      # are configured with a namespace so this default will apply
+      namespace: fleet-kustomize-example
+
+
+      kustomize:
+        # To use a kustomization.yaml different from the one in the root folder
+        dir: ""
+    name: fleet.yaml
+  - content: |
+      bases:
+      - overlays/dev
+    name: kustomization.yaml
+  - content: |
+      bases:
+      - ../../base
+      patches:
+      - redis-slave-deployment.yaml
+      - redis-slave-service.yaml
+    name: overlays/dev/kustomization.yaml
+  - content: |
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: redis-slave
+      spec:
+        replicas: 0
+    name: overlays/dev/redis-slave-deployment.yaml
+  - content: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          role: master
+    name: overlays/dev/redis-slave-service.yaml
+  targets:
+  - clusterGroup: default
+    name: default

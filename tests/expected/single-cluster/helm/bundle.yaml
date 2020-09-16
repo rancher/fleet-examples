@@ -1,0 +1,222 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Bundle
+metadata:
+  name: test
+  namespace: fleet-local
+spec:
+  helm:
+    releaseName: guestbook
+    values:
+      replicas: 2
+  namespace: fleet-helm-example
+  resources:
+  - content: |
+      apiVersion: v2
+      name: guestbook
+      description: Sample application
+      version: 0.0.0
+      appVersion: 0.0.0
+    name: Chart.yaml
+  - content: |
+      # Helm Example
+
+      This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application as
+      packaged as a Helm chart.
+      The app will be deployed into the `fleet-helm-example` namespace.
+
+      ```yaml
+      kind: GitRepo
+      apiVersion: fleet.cattle.io/v1alpha1
+      metadata:
+        name: helm
+        namespace: fleet-local
+      spec:
+        repo: https://github.com/rancher/fleet-examples/
+        paths:
+        - single-cluster/helm
+      ```
+    name: README.md
+  - content: |
+      # This file and all contents in it are OPTIONAL.
+
+      # The namespace this chart will be installed to,
+      # if not specified the chart will be installed to "default"
+      namespace: fleet-helm-example
+
+      # Custom helm options
+      helm:
+        # The release name to use. If empty a generated release name will be used
+        releaseName: guestbook
+
+        # The directory of the chart in the repo.  Also any valid go-getter supported
+        # URL can be used there is specify where to download the chart from.
+        # If repo below is set this value if the chart name in the repo
+        chart: ""
+
+        # An https to a valid Helm repository to download the chart from
+        repo: ""
+
+        # Used if repo is set to look up the version of the chart
+        version: ""
+
+        # Force recreate resource that can not be updated
+        force: false
+
+        # How long for helm to wait for the release to be active. If the value
+        # is less that or equal to zero, we will not wait in Helm
+        timeoutSeconds: 0
+
+        # Custom values that will be passed as values.yaml to the installation
+        values:
+          replicas: 2
+    name: fleet.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          matchLabels:
+            app: guestbook
+            tier: frontend
+        replicas: {{ .Values.replicas }}
+        template:
+          metadata:
+            labels:
+              app: guestbook
+              tier: frontend
+          spec:
+            containers:
+            - name: php-redis
+              image: gcr.io/google-samples/gb-frontend:v4
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 80
+    name: templates/frontend-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: frontend
+        labels:
+          app: guestbook
+          tier: frontend
+      spec:
+        type: "{{ .Values.serviceType }}"
+        ports:
+        - port: 80
+        selector:
+          app: guestbook
+          tier: frontend
+    name: templates/frontend-service.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-master
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: master
+            tier: backend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: master
+              tier: backend
+          spec:
+            containers:
+            - name: master
+              image: redis
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: templates/redis-master-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-master
+        labels:
+          app: redis
+          role: master
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+          targetPort: 6379
+        selector:
+          app: redis
+          role: master
+          tier: backend
+    name: templates/redis-master-service.yaml
+  - content: |
+      {{ if .Values.replication }}
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: slave
+            tier: backend
+        replicas: 2
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: slave
+              tier: backend
+          spec:
+            containers:
+            - name: slave
+              image: gcr.io/google_samples/gb-redisslave:v1
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+      {{ end }}
+    name: templates/redis-slave-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-slave
+        labels:
+          app: redis
+          role: slave
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+        selector:
+          app: redis
+          {{ if .Values.replication }}
+          role: slave
+          {{ else }}
+          role: master
+          {{ end }}
+          tier: backend
+    name: templates/redis-slave-service.yaml
+  - content: |
+      replication: true
+      replicas: 1
+      serviceType: NodePort
+    name: values.yaml
+  targets:
+  - clusterGroup: default
+    name: default

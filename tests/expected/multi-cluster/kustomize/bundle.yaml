@@ -1,0 +1,300 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Bundle
+metadata:
+  name: test
+  namespace: fleet-local
+spec:
+  namespace: fleet-mc-kustomize-example
+  resources:
+  - content: |
+      # Helm Example
+
+      This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application
+      using kustomize. The app will be deployed into the `fleet-mc-kustomize-example` namespace.
+
+      The application will be customized as follows per environment:
+
+      * Dev clusters: Only the redis leader is deployed and not the followers.
+      * Test clusters: Scale the front deployment to 3
+      * Prod clusters: Scale the front deployment to 3 and set the service type to LoadBalancer
+
+      ```yaml
+      kind: GitRepo
+      apiVersion: fleet.cattle.io/v1alpha1
+      metadata:
+        name: kustomize
+        namespace: fleet-local
+      spec:
+        repo: https://github.com/rancher/fleet-examples/
+        bundleDirs:
+        - kustomize
+        targetCustomization:
+        - name: dev
+          clusterSelector:
+            matchLabels:
+              env: dev
+
+        - name: test
+          clusterSelector:
+            matchLabels:
+              env: test
+
+        - name: prod
+          clusterSelector:
+            matchLabels:
+              env: prod
+      ```
+    name: README.md
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        selector:
+          matchLabels:
+            app: guestbook
+            tier: frontend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: guestbook
+              tier: frontend
+          spec:
+            containers:
+            - name: php-redis
+              image: gcr.io/google-samples/gb-frontend:v4
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 80
+    name: base/frontend-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: frontend
+        labels:
+          app: guestbook
+          tier: frontend
+      spec:
+        type: NodePort
+        ports:
+        - port: 80
+        selector:
+          app: guestbook
+          tier: frontend
+    name: base/frontend-service.yaml
+  - content: |
+      resources:
+      - frontend-deployment.yaml
+      - frontend-service.yaml
+      - redis-master-deployment.yaml
+      - redis-master-service.yaml
+      - redis-slave-deployment.yaml
+      - redis-slave-service.yaml
+    name: base/kustomization.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-master
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: master
+            tier: backend
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: master
+              tier: backend
+          spec:
+            containers:
+            - name: master
+              image: redis
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: base/redis-master-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-master
+        labels:
+          app: redis
+          role: master
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+          targetPort: 6379
+        selector:
+          app: redis
+          role: master
+          tier: backend
+    name: base/redis-master-service.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+            role: slave
+            tier: backend
+        replicas: 2
+        template:
+          metadata:
+            labels:
+              app: redis
+              role: slave
+              tier: backend
+          spec:
+            containers:
+            - name: slave
+              image: gcr.io/google_samples/gb-redisslave:v1
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+              ports:
+              - containerPort: 6379
+    name: base/redis-slave-deployment.yaml
+  - content: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis-slave
+        labels:
+          app: redis
+          role: slave
+          tier: backend
+      spec:
+        ports:
+        - port: 6379
+        selector:
+          app: redis
+          role: slave
+          tier: backend
+    name: base/redis-slave-service.yaml
+  - content: |
+      namespace: fleet-mc-kustomize-example
+      targets:
+      - name: dev
+        clusterSelector:
+          matchLabels:
+            env: dev
+        kustomize:
+          dir: overlays/dev
+
+      - name: test
+        clusterSelector:
+          matchLabels:
+            env: test
+        kustomize:
+          dir: overlays/test
+
+      - name: prod
+        clusterSelector:
+          matchLabels:
+            env: prod
+        kustomize:
+          dir: overlays/prod
+    name: fleet.yaml
+  - content: |
+      resources:
+      - overlays/dev
+    name: kustomization.yaml
+  - content: |
+      resources:
+      - ../../base
+      patches:
+      - redis-slave-deployment.yaml
+      - redis-slave-service.yaml
+    name: overlays/dev/kustomization.yaml
+  - content: |
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: redis-slave
+      spec:
+        replicas: 0
+    name: overlays/dev/redis-slave-deployment.yaml
+  - content: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: redis-slave
+      spec:
+        selector:
+          role: master
+    name: overlays/dev/redis-slave-service.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        replicas: 3
+    name: overlays/prod/frontend-deployment.yaml
+  - content: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: frontend
+      spec:
+        type: LoadBalancer
+    name: overlays/prod/frontend-service.yaml
+  - content: |
+      resources:
+      - ../../base
+      patches:
+      - frontend-deployment.yaml
+      - frontend-service.yaml
+    name: overlays/prod/kustomization.yaml
+  - content: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: frontend
+      spec:
+        replicas: 3
+    name: overlays/test/frontend-deployment.yaml
+  - content: |
+      resources:
+      - ../../base
+      patches:
+      - frontend-deployment.yaml
+    name: overlays/test/kustomization.yaml
+  targets:
+  - clusterSelector:
+      matchLabels:
+        env: dev
+    kustomize:
+      dir: overlays/dev
+    name: dev
+  - clusterSelector:
+      matchLabels:
+        env: test
+    kustomize:
+      dir: overlays/test
+    name: test
+  - clusterSelector:
+      matchLabels:
+        env: prod
+    kustomize:
+      dir: overlays/prod
+    name: prod

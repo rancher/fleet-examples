@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    app: guestbook
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+    tier: frontend
+  name: frontend
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: guestbook
+    tier: frontend
+  type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    app: redis
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+    role: master
+    tier: backend
+  name: redis-master
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    tier: backend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    app: redis
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+    role: slave
+    tier: backend
+  name: redis-slave
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: redis
+    role: slave
+    tier: backend
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+      - image: gcr.io/google-samples/gb-frontend:v4
+        name: php-redis
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+  name: redis-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+      - image: redis
+        name: master
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    objectset.rio.cattle.io/id: -test
+  labels:
+    objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
+  name: redis-slave
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+        tier: backend
+    spec:
+      containers:
+      - image: gcr.io/google_samples/gb-redisslave:v1
+        name: slave
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
