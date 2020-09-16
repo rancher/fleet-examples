@@ -1,5 +1,5 @@
 namespace: fleet-mc-kustomize-example
-targets:
+targetCustomizations:
 - name: dev
   clusterSelector:
     matchLabels:

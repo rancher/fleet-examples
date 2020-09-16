@@ -47,7 +47,7 @@ spec:
     name: README.md
   - content: |
       namespace: fleet-mc-manifest-example
-      targets:
+      targetCustomizations:
       - name: dev
         clusterSelector:
           matchLabels:
