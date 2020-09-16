@@ -9,11 +9,11 @@ All examples will deploy content to the local cluster running the Fleet Manager.
 
 | Example | Description |
 |-------------|-------------|
-| [manifest](single-cluster/manifest/) | A full example of using raw Kubernetes YAML and customizing it per target cluster |
-| [helm](single-cluster/helm/) | A full example of using Helm and customizing it per target cluster |
-| [helm-external](single-cluster/helm-external/) | A full example of using a Helm chart that is downloaded from a third party source and customizing it per target cluster |
-| [kustomize](single-cluster/kustomize/) | A full example of using Kustomize and customizing it per target cluster |
-| [helm-kustomize](single-cluster/helm-kustomize/) | A full example of using Kustomize to modify a third party Helm chart |
+| [manifest](single-cluster/manifest/) | An example using raw Kubernetes YAML and customizing it per target cluster |
+| [helm](single-cluster/helm/) | An example using Helm and customizing it per target cluster |
+| [helm-multi-chart](single-cluster/helm-external/) | An example deploying multiple charts from a single repo |
+| [kustomize](single-cluster/kustomize/) | An example using Kustomize and customizing it per target cluster |
+| [helm-kustomize](single-cluster/helm-kustomize/) | An example using Kustomize to modify a third party Helm chart |
 
 ## Multi-Cluster Examples
 
