@@ -1,4 +1,4 @@
-namespace: cattle-monitoring-system
+defaultNamespace: cattle-monitoring-system
 helm:
   releaseName: rancher-monitoring
   repo: https://charts.rancher.io
