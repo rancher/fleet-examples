@@ -8,6 +8,7 @@ metadata:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
     tier: frontend
   name: frontend
+  namespace: fleet-mc-helm-example
 spec:
   ports:
   - port: 80
@@ -28,6 +29,7 @@ metadata:
     role: master
     tier: backend
   name: redis-master
+  namespace: fleet-mc-helm-example
 spec:
   ports:
   - port: 6379
@@ -49,6 +51,7 @@ metadata:
     role: slave
     tier: backend
   name: redis-slave
+  namespace: fleet-mc-helm-example
 spec:
   ports:
   - port: 6379
@@ -66,6 +69,7 @@ metadata:
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
   name: frontend
+  namespace: fleet-mc-helm-example
 spec:
   replicas: 1
   selector:
@@ -97,6 +101,7 @@ metadata:
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
   name: redis-master
+  namespace: fleet-mc-helm-example
 spec:
   replicas: 1
   selector:

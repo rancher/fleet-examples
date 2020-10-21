@@ -6,6 +6,7 @@ metadata:
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
   name: frontend
+  namespace: fleet-mc-kustomize-example
 spec:
   replicas: 1
   selector:
@@ -39,6 +40,7 @@ metadata:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
     tier: frontend
   name: frontend
+  namespace: fleet-mc-kustomize-example
 spec:
   ports:
   - port: 80
@@ -56,6 +58,7 @@ metadata:
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
   name: redis-master
+  namespace: fleet-mc-kustomize-example
 spec:
   replicas: 1
   selector:
@@ -92,6 +95,7 @@ metadata:
     role: master
     tier: backend
   name: redis-master
+  namespace: fleet-mc-kustomize-example
 spec:
   ports:
   - port: 6379
@@ -110,6 +114,7 @@ metadata:
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
   name: redis-slave
+  namespace: fleet-mc-kustomize-example
 spec:
   replicas: 0
   selector:
@@ -146,6 +151,7 @@ metadata:
     role: slave
     tier: backend
   name: redis-slave
+  namespace: fleet-mc-kustomize-example
 spec:
   ports:
   - port: 6379

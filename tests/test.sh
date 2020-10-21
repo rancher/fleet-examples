@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export COMMIT=fake
+
 cd $(dirname $0)
 
 rm -rf output
@@ -12,8 +14,8 @@ for i in ../single-cluster/*; do
     pushd $i
     for j in dev test prod; do
         mkdir -p ../../tests/output/garbage/${i}
-        fleet test  > ../../tests/output/garbage/${i}/${j}-output.yaml
-        fleet test --print-bundle  > ../../tests/output/garbage/${i}/bundle.yaml
+        fleet test > ../../tests/output/garbage/${i}/${j}-output.yaml
+        fleet apply -o - test > ../../tests/output/garbage/${i}/bundle.yaml
     done
     popd
 done
@@ -26,7 +28,7 @@ for i in ../multi-cluster/*; do
     for j in dev test prod; do
         mkdir -p ../../tests/output/garbage/${i}
         fleet test -l env=${j} > ../../tests/output/garbage/${i}/${j}-output.yaml
-        fleet test --print-bundle  > ../../tests/output/garbage/${i}/bundle.yaml
+        fleet apply -o - test > ../../tests/output/garbage/${i}/bundle.yaml
     done
     popd
 done

@@ -1,6 +1,8 @@
 apiVersion: fleet.cattle.io/v1alpha1
 kind: Bundle
 metadata:
+  labels:
+    fleet.cattle.io/commit: fake
   name: test
   namespace: fleet-local
 spec:
@@ -39,7 +41,7 @@ spec:
   - content: |
       # This file and all contents in it are OPTIONAL.
 
-      # The namespace this chart will be installed to,
+      # The namespace this chart will be installed and restricted to,
       # if not specified the chart will be installed to "default"
       namespace: fleet-helm-example
 

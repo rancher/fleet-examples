@@ -1,6 +1,8 @@
 apiVersion: fleet.cattle.io/v1alpha1
 kind: Bundle
 metadata:
+  labels:
+    fleet.cattle.io/commit: fake
   name: test
   namespace: fleet-local
 spec:
