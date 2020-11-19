@@ -1,4 +1,4 @@
-# Manifests Example
+# Multi-Cluster Manifests Example
 
 This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application.
 The app will be deployed into the `fleet-mc-manifest-example` namespace.
@@ -16,10 +16,10 @@ metadata:
   name: manifests
   namespace: fleet-local
 spec:
-  repo: https://github.com/rancher/fleet-examples/
-  bundleDirs:
-  - manifests
-  targetCustomizations:
+  repo: https://github.com/rancher/fleet-examples
+  paths:
+  - multi-cluster/manifests
+  targets:
   - name: dev
     clusterSelector:
       matchLabels:

@@ -1,4 +1,4 @@
-# Helm Example
+# Multi-Cluster Helm Example
 
 This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application as
 packaged as a Helm chart.
@@ -17,10 +17,10 @@ metadata:
   name: helm
   namespace: fleet-local
 spec:
-  repo: https://github.com/rancher/fleet-examples/
+  repo: https://github.com/rancher/fleet-examples
   paths:
-  - helm
-  targetCustomizations:
+  - multi-cluster/helm
+  targets:
   - name: dev
     clusterSelector:
       matchLabels:
