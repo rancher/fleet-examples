@@ -5,7 +5,7 @@ The repo is broken up into two different sections: Single cluster and Multi Clus
 
 ## Single Cluster Examples
 
-All examples will deploy content to clusters with no per-cluster customizations. The is a good starting point to
+All examples will deploy content to clusters with no per-cluster customizations. This is a good starting point to
 understand the basics of structuring git repos for Fleet.
 
 | Example | Description |
