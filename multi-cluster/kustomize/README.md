@@ -1,4 +1,4 @@
-# Helm Example
+# Multi-Cluster Kustomize Example
 
 This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application
 using kustomize. The app will be deployed into the `fleet-mc-kustomize-example` namespace.
@@ -16,10 +16,10 @@ metadata:
   name: kustomize
   namespace: fleet-local
 spec:
-  repo: https://github.com/rancher/fleet-examples/
-  bundleDirs:
-  - kustomize
-  targetCustomization:
+  repo: https://github.com/rancher/fleet-examples
+  paths:
+  - multi-cluster/kustomize
+  targets:
   - name: dev
     clusterSelector:
       matchLabels:

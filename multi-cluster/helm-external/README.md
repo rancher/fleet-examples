@@ -1,4 +1,4 @@
-# Helm External Example
+# Multi-Cluster Helm External Example
 
 This example will deploy the [Kubernetes sample guestbook](https://github.com/kubernetes/examples/tree/master/guestbook/) application as
 packaged as a Helm chart downloaded from a third party source.
@@ -17,10 +17,10 @@ metadata:
   name: helm-external
   namespace: fleet-local
 spec:
-  repo: https://github.com/rancher/fleet-examples/
+  repo: https://github.com/rancher/fleet-examples
   paths:
-  - helm-external
-  targetCustomizations:
+  - multi-cluster/helm-external
+  targets:
   - name: dev
     clusterSelector:
       matchLabels:
