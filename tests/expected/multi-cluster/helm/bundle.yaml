@@ -4,7 +4,7 @@ metadata:
   labels:
     fleet.cattle.io/commit: fake
   name: test
-  namespace: fleet-local
+  namespace: fleet-default
 spec:
   namespace: fleet-mc-helm-example
   resources:
@@ -33,7 +33,7 @@ spec:
       apiVersion: fleet.cattle.io/v1alpha1
       metadata:
         name: helm
-        namespace: fleet-local
+        namespace: fleet-default
       spec:
         repo: https://github.com/rancher/fleet-examples
         paths:

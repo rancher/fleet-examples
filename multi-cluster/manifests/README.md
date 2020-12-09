@@ -14,7 +14,7 @@ kind: GitRepo
 apiVersion: fleet.cattle.io/v1alpha1
 metadata:
   name: manifests
-  namespace: fleet-local
+  namespace: fleet-default
 spec:
   repo: https://github.com/rancher/fleet-examples
   paths:
