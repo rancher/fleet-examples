@@ -28,7 +28,7 @@ for i in ../multi-cluster/*; do
     for j in dev test prod; do
         mkdir -p ../../tests/output/garbage/${i}
         fleet test -l env=${j} > ../../tests/output/garbage/${i}/${j}-output.yaml
-        fleet apply -o - test > ../../tests/output/garbage/${i}/bundle.yaml
+        fleet apply -n fleet-default -o - test > ../../tests/output/garbage/${i}/bundle.yaml
     done
     popd
 done
