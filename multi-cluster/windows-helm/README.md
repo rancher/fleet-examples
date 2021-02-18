@@ -1,7 +1,8 @@
 # Windows Helm Example
 
 This example will deploy the [Windows application example](https://kubernetes.io/docs/setup/production-environment/windows/user-guide-windows-containers/) packaged as a Helm chart.
-This must be deployed in a multi-cluster configuration.
+It must be deployed in a multi-cluster configuration, and requires Fleet v0.3.4+.
+For more information, check out the [Fleet docs](https://rancher.com/docs/rancher/v2.x/en/deploy-across-clusters/fleet/).
 
 ## Preparing Your Downstream Cluster(s)
 

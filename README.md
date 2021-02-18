@@ -29,3 +29,8 @@ and configure the app differently for each target.
 | [kustomize](multi-cluster/kustomize/) | A full example of using Kustomize and customizing it per target cluster |
 | [helm-kustomize](multi-cluster/helm-kustomize/) | A full example of using Kustomize to modify a third party Helm chart |
 | [windows-helm](multi-cluster/windows-helm/) | A full example of using Helm for Windows cluster(s)
+
+## Windows Example
+
+Using downstream clusters with Windows nodes?
+Check out the [windows-helm](multi-cluster/windows-helm/) multi-cluster example above.
