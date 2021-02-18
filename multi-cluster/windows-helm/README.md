@@ -11,8 +11,8 @@ You can determine the value for the `windows.version` label key based on the rel
 
 Description | Example
 --- | ---
-For Windows Server SAC nodes, the value will be the SAC release number prepended with "win". | 2004 SAC would result in `windows.version: win2004`
-For Windows Server LTSC nodes, the value will be the SAC release number that the LTSC is based on. | 2019 LTSC would result in `windows.version: win1809`
+For Windows Server SAC nodes, the value will be the SAC release number (prepended with "win"). | 2004 SAC would result in `windows.version: win2004`
+For Windows Server LTSC nodes, the value will be the SAC release number that the LTSC is based on (prepended with "win"). | 2019 LTSC would result in `windows.version: win1809`
 
 ## Creating the GitRepo
 
