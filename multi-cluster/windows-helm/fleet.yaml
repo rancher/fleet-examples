@@ -1,0 +1,34 @@
+namespace: fleet-helm-windows-example
+targetCustomizations:
+- name: win2004
+  helm:
+    values:
+      image:
+        tag: 2004
+  clusterSelector:
+    matchLabels:
+      windows.version: win2004
+- name: win1909
+  helm:
+    values:
+      image:
+        tag: 1909
+  clusterSelector:
+    matchLabels:
+      windows.version: win1909
+- name: win1903
+  helm:
+    values:
+      image:
+        tag: 1903
+  clusterSelector:
+    matchLabels:
+      windows.version: win1903
+- name: win1809
+  helm:
+    values:
+      image:
+        tag: 1809
+  clusterSelector:
+    matchLabels:
+      windows.version: win1809
