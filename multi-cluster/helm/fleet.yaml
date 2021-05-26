@@ -1,26 +1,31 @@
 namespace: fleet-mc-helm-example
+overrideTargets: true
+targets:
+  - name: test
+    clusterSelector:
+      matchLabels:
+        env: test
 targetCustomizations:
-- name: dev
-  helm:
-    values:
-      replication: false
-  clusterSelector:
-    matchLabels:
-      env: dev
+  # - name: dev
+  #   helm:
+  #     values:
+  #       replication: false
+  #   clusterSelector:
+  #     matchLabels:
+  #       env: dev
 
-- name: test
-  helm:
-    values:
-      replicas: 3
-  clusterSelector:
-    matchLabels:
-      env: test
-
-- name: prod
-  helm:
-    values:
-      serviceType: LoadBalancer
-      replicas: 3
-  clusterSelector:
-    matchLabels:
-      env: prod
+  - name: test
+    helm:
+      values:
+        replicas: 3
+    clusterSelector:
+      matchLabels:
+        env: test
+# - name: prod
+#   helm:
+#     values:
+#       serviceType: LoadBalancer
+#       replicas: 3
+#   clusterSelector:
+#     matchLabels:
+#       env: prod
