@@ -1,0 +1,12 @@
+bases:
+  - ../../base
+
+namePrefix: prod-
+
+commonLabels:
+  env: prod
+
+images:
+  - name: nginx:1.21
+    newName: nginx
+    newTag: '1.19'

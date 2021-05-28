@@ -1,0 +1,5 @@
+resources:
+  - deployment.yaml
+
+commonLabels:
+  owner: daniel

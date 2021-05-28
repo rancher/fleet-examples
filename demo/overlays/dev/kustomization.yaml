@@ -1,0 +1,18 @@
+bases:
+  - ../../base
+
+namePrefix: dev-
+
+commonLabels:
+  env: dev
+  path: /teste/novo
+
+images:
+  - name: nginx:1.21
+    newName: nginx
+    newTag: '1.20'
+
+configMapGenerator:
+  - name: app-properties
+    literals:
+      - APP_WELCOME=App v1
