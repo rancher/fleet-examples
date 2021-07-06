@@ -1,0 +1,34 @@
+namespace: fleet-mc-override-targets-example
+
+helm:
+  values:
+    replicas: 1
+overrideTargets: true
+targets:
+  - name: test
+    clusterSelector:
+      matchLabels:
+        env: test
+# targetCustomizations:
+# - name: dev
+#   helm:
+#     values:
+#       replication: false
+#   clusterSelector:
+#     matchLabels:
+#       env: dev
+# - name: test
+#   helm:
+#     values:
+#       replicas: 3
+#   clusterSelector:
+#     matchLabels:
+#       env: test
+# - name: prod
+#   helm:
+#     values:
+#       serviceType: LoadBalancer
+#       replicas: 3
+#   clusterSelector:
+#     matchLabels:
+#       env: prod
