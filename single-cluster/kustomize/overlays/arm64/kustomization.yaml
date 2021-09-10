@@ -1,0 +1,10 @@
+bases:
+- ../../base
+patches:
+- redis-slave-deployment.yaml
+- redis-slave-service.yaml
+
+images:
+- name: gcr.io/google-samples/gb-frontend
+  newname: gcr.io/google-samples/gb-frontend-arm64
+  newTag: v5
