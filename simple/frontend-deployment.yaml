@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: guestbook
       tier: frontend
-  replicas: 3
+  replicas: 2
   template:
     metadata:
       labels:
@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: php-redis
-        image: gcr.io/google-samples/gb-frontend:v3
+        image: gcr.io/google-samples/gb-frontend:v4
         resources:
           requests:
-            cpu: 100m
+            cpu: 200m
             memory: 100Mi
         ports:
         - containerPort: 80
