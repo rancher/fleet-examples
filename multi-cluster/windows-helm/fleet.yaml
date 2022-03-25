@@ -1,5 +1,13 @@
 namespace: fleet-helm-windows-example
 targetCustomizations:
+- name: win2022
+  helm:
+    values:
+      image:
+        tag: 2022
+  clusterSelector:
+    matchLabels:
+      windows.version: win2022
 - name: win2004
   helm:
     values:
