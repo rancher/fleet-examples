@@ -3,6 +3,7 @@ helm:
   releaseName: rancher-monitoring
   repo: https://charts.rancher.io
   chart: rancher-monitoring
+  version: 9.4.201
 diff:
   comparePatches:
   - apiVersion: admissionregistration.k8s.io/v1beta1
