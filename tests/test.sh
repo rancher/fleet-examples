@@ -18,28 +18,24 @@ if ! [ $(command -v fleet) ]; then
     printf "Path to fleet binary: $FLEET_PATH\n"
 fi
 
-for i in ../single-cluster/*; do
-    if [ ! -d $i ]; then
-        continue
-    fi
-    pushd $i
-    for j in dev test prod; do
-        mkdir -p ../../tests/output/garbage/${i}
-        eval $FLEET_PATH test > ../../tests/output/garbage/${i}/${j}-output.yaml
-        eval $FLEET_PATH apply -o - test > ../../tests/output/garbage/${i}/bundle.yaml
+for fixture in ./expected/single-cluster/*; do
+    case=${fixture#./expected/}
+    pushd ../$case
+    for env in dev test prod; do
+        mkdir -p ../../tests/output/${case}
+        eval $FLEET_PATH test > ../../tests/output/${case}/${env}-output.yaml
+        eval $FLEET_PATH apply -o - test > ../../tests/output/${case}/bundle.yaml
     done
     popd
 done
 
-for i in ../multi-cluster/*; do
-    if [ ! -d $i ]; then
-        continue
-    fi
-    pushd $i
-    for j in dev test prod; do
-        mkdir -p ../../tests/output/garbage/${i}
-        eval $FLEET_PATH test -l env=${j} > ../../tests/output/garbage/${i}/${j}-output.yaml
-        eval $FLEET_PATH apply -n fleet-default -o - test > ../../tests/output/garbage/${i}/bundle.yaml
+for fixture in ./expected/multi-cluster/*; do
+    case=${fixture#./expected/}
+    pushd ../$case
+    for env in dev test prod; do
+        mkdir -p ../../tests/output/${case}
+        eval $FLEET_PATH test -l env=${env} > ../../tests/output/${case}/${env}-output.yaml
+        eval $FLEET_PATH apply -n fleet-default -o - test > ../../tests/output/${case}/bundle.yaml
     done
     popd
 done
