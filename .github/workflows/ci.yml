@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  schedule:
+    - cron:  '0 5 30 * *'
+  pull_request:
+    paths-ignore:
+    - '*.md'
+
+env:
+  FLEET_VERSION: '0.3.9'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      -
+        uses: actions/cache@v3
+        id: fleet-cli-cache
+        with:
+          path: /home/runner/.local/bin
+          key: ${{ runner.os }}-fleet-cli-${{ env.FLEET_VERSION }}
+      -
+        name: Download CLI
+        if: steps.fleet-cli-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /home/runner/.local/bin
+          wget -nv "https://github.com/rancher/fleet/releases/download/v$FLEET_VERSION/fleet-linux-amd64"
+          mv fleet-linux-amd64 /home/runner/.local/bin/fleet
+          chmod +x /home/runner/.local/bin/fleet
+      -
+        name: Test
+        run: |
+          tests/test.sh
