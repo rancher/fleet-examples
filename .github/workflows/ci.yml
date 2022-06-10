@@ -30,7 +30,7 @@ jobs:
         if: steps.fleet-cli-cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p /home/runner/.local/bin
-          wget -nv "https://github.com/rancher/fleet/releases/download/v$FLEET_VERSION/fleet-linux-amd64"
+          wget -nv "https://github.com/rancher/fleet/releases/latest/download/fleet-linux-amd64"
           mv fleet-linux-amd64 /home/runner/.local/bin/fleet
           chmod +x /home/runner/.local/bin/fleet
       -
