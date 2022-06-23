@@ -3,6 +3,8 @@
 This repository contains examples of how to use Fleet using different approaches.
 The repo is broken up into two different sections: Single cluster and Multi Cluster.
 
+[![CI](https://github.com/rancher/fleet-examples/actions/workflows/ci.yml/badge.svg)](https://github.com/rancher/fleet-examples/actions/workflows/ci.yml)
+
 ## Single Cluster Examples
 
 All examples will deploy content to clusters with no per-cluster customizations. This is a good starting point to
