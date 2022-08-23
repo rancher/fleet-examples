@@ -7,12 +7,16 @@ on:
     paths-ignore:
     - '*.md'
 
-env:
-  FLEET_VERSION: '0.3.9'
-
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        fleet_version:
+          - v0.3.9
+          # - v0.3.10
 
     steps:
       -
@@ -24,13 +28,13 @@ jobs:
         id: fleet-cli-cache
         with:
           path: /home/runner/.local/bin
-          key: ${{ runner.os }}-fleet-cli-${{ env.FLEET_VERSION }}
+          key: ${{ runner.os }}-fleet-cli-${{ matrix.fleet_version }}
       -
         name: Download CLI
         if: steps.fleet-cli-cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p /home/runner/.local/bin
-          wget -nv "https://github.com/rancher/fleet/releases/latest/download/fleet-linux-amd64"
+          wget -nv "https://github.com/rancher/fleet/releases/download/${{ matrix.fleet_version }}/fleet-linux-amd64"
           mv fleet-linux-amd64 /home/runner/.local/bin/fleet
           chmod +x /home/runner/.local/bin/fleet
       -
