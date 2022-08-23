@@ -3,43 +3,16 @@ helm:
   releaseName: rancher-monitoring
   repo: https://charts.rancher.io
   chart: rancher-monitoring
-  version: 9.4.201
+  version: 100.1.2+up19.0.3
 diff:
   comparePatches:
-  - apiVersion: admissionregistration.k8s.io/v1beta1
-    kind: MutatingWebhookConfiguration
-    name: rancher-monitoring-admission
-    operations:
-    - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
-    - {"op":"remove", "path":"/webhooks/0/rules/0/scope"}
-  - apiVersion: admissionregistration.k8s.io/v1beta1
-    kind: ValidatingWebhookConfiguration
-    name: rancher-monitoring-admission
-    operations:
-    - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
-    - {"op":"remove", "path":"/webhooks/0/rules/0/scope"}
-  - apiVersion: policy/v1beta1
-    kind: PodSecurityPolicy
-    operations:
-    - {"op":"remove", "path":"/spec/hostIPC"}
-    - {"op":"remove", "path":"/spec/hostNetwork"}
-    - {"op":"remove", "path":"/spec/hostPID"}
-    - {"op":"remove", "path":"/spec/privileged"}
-    - {"op":"remove", "path":"/spec/readOnlyRootFilesystem"}
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: rancher-monitoring-grafana
-    namespace: cattle-monitoring-system
-    operations:
-    - {"op":"remove", "path":"/spec/template/spec/containers/0/env/0/value"}
-  - apiVersion: apps/v1
-    kind: Deployment
-    operations:
-    - {"op":"remove", "path":"/spec/template/spec/hostNetwork"}
-    - {"op":"remove", "path":"/spec/template/spec/nodeSelector"}
-    - {"op":"remove", "path":"/spec/template/spec/priorityClassName"}
-    - {"op":"remove", "path":"/spec/template/spec/tolerations"}
-  - apiVersion: v1
-    kind: ServiceAccount
-    operations:
-    - {"op":"remove", "path":"/imagePullSecrets"}
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: MutatingWebhookConfiguration
+      name: rancher-monitoring-admission
+      operations:
+        - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingWebhookConfiguration
+      name: rancher-monitoring-admission
+      operations:
+        - {"op":"remove", "path":"/webhooks/0/failurePolicy"}
