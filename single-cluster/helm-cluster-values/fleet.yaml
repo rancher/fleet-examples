@@ -1,0 +1,27 @@
+helm:
+  # It is possible to specify the keys and values as gotpl strings for advanced templating needs.
+  # Most of the functions from sprig templating library is available.
+  # The template context has following keys.
+  # `.ClusterValues` are retrieved from target cluster's `spec.templateValues`
+  # `.ClusterLabels` and `.ClusterAnnotations` are the labels and annoations in the cluster resource.
+  # `.ClusterName` as the fleet's cluster resource name.
+  # `.ClusterNamespace` as the namespace which the cluster resource exists.
+  values:
+    name: name-{{ .ClusterName }}
+    namespace: |
+        {{ .ClusterNamespace }}{{ uuidv4 }}
+    labels: |
+      {{- .ClusterLabels | toJson }}
+    clusterValues: |
+      {{- .ClusterValues | toJson }}
+    image:
+      # hasKey, default .Attr not working
+      # clusterLabels is not a Dictionary
+      pullPolicy: |
+          {{ if hasKey .ClusterValues "policy" }}{{.ClusterValues.policy}}{{else}}"IfNotPresent"{{end}}
+      repository: |-
+          {{if index .ClusterLabels "repository"}}{{.ClusterLabels.repository}}{{else}}rancher/mirrored-library-busybox{{end}}
+      other: |
+          {{ index .ClusterLabels "policy" }}
+    # http://masterminds.github.io/sprig/
+    annotations: "{{ list 1 1 1 2 | uniq }}"

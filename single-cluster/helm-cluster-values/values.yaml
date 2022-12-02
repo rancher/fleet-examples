@@ -1,0 +1,11 @@
+name: ""
+namespace: ""
+labels: ""
+clusterValues: ""
+
+image:
+  repository: rancher/mirrored-library-busybox
+  pullPolicy: IfNotPresent
+  tag: "1.34.1"
+
+annotations: ["test"]
