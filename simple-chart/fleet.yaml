@@ -1,0 +1,4 @@
+helm:
+  chart: config-chart
+  values:
+    name: example-value
