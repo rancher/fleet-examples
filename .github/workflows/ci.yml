@@ -2,10 +2,11 @@ name: CI
 
 on:
   schedule:
-    - cron:  '0 5 * * *'
+    - cron: '0 5 * * *'
   pull_request:
     paths-ignore:
-    - '*.md'
+      - '*.md'
+  workflow_dispatch:
 
 jobs:
   test:
