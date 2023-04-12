@@ -239,6 +239,7 @@ spec:
       matchLabels:
         env: dev
     helm:
+      chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
       values:
         replication: false
     name: dev
@@ -246,6 +247,7 @@ spec:
       matchLabels:
         env: test
     helm:
+      chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
       values:
         replicas: 3
     name: test
@@ -253,6 +255,7 @@ spec:
       matchLabels:
         env: prod
     helm:
+      chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
       values:
         replicas: 3
         serviceType: LoadBalancer
