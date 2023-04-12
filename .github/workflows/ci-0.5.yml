@@ -1,4 +1,4 @@
-name: CI
+name: CI v0.5
 
 on:
   schedule:
@@ -14,13 +14,16 @@ jobs:
       fail-fast: false
       matrix:
         fleet_version:
-          - "v0.7.0-AGENT-rc.1"
+          - v0.3.9
+          - v0.4.0
+          - v0.5.0
 
     steps:
       -
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: "release/v0.5"
       -
         uses: actions/cache@v3
         id: fleet-cli-cache
