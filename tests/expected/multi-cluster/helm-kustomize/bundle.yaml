@@ -231,7 +231,7 @@ spec:
           dir: overlays/prod
     name: fleet.yaml
   - content: |
-      patches:
+      patchesStrategicMerge:
       - redis-slave-deployment.yaml
       - redis-slave-service.yaml
     name: overlays/dev/kustomization.yaml
@@ -269,7 +269,7 @@ spec:
         type: LoadBalancer
     name: overlays/prod/frontend-service.yaml
   - content: |
-      patches:
+      patchesStrategicMerge:
       - frontend-deployment.yaml
       - frontend-service.yaml
     name: overlays/prod/kustomization.yaml
@@ -282,7 +282,7 @@ spec:
         replicas: 3
     name: overlays/test/frontend-deployment.yaml
   - content: |
-      patches:
+      patchesStrategicMerge:
       - frontend-deployment.yaml
     name: overlays/test/kustomization.yaml
   targets:

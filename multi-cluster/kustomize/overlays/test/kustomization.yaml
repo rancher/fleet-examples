@@ -1,4 +1,4 @@
 resources:
 - ../../base
-patches:
+patchesStrategicMerge:
 - frontend-deployment.yaml
