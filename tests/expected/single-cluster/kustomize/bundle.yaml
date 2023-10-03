@@ -192,7 +192,7 @@ spec:
   - content: |
       bases:
       - ../../base
-      patches:
+      patchesStrategicMerge:
       - redis-slave-deployment.yaml
       - redis-slave-service.yaml
     name: overlays/dev/kustomization.yaml

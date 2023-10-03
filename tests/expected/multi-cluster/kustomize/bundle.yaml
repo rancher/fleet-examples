@@ -219,7 +219,7 @@ spec:
   - content: |
       resources:
       - ../../base
-      patches:
+      patchesStrategicMerge:
       - redis-slave-deployment.yaml
       - redis-slave-service.yaml
     name: overlays/dev/kustomization.yaml
@@ -259,7 +259,7 @@ spec:
   - content: |
       resources:
       - ../../base
-      patches:
+      patchesStrategicMerge:
       - frontend-deployment.yaml
       - frontend-service.yaml
     name: overlays/prod/kustomization.yaml
@@ -274,7 +274,7 @@ spec:
   - content: |
       resources:
       - ../../base
-      patches:
+      patchesStrategicMerge:
       - frontend-deployment.yaml
     name: overlays/test/kustomization.yaml
   targets:
