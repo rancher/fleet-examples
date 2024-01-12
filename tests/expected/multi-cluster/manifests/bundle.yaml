@@ -6,6 +6,8 @@ metadata:
   name: test
   namespace: fleet-default
 spec:
+  correctDrift: {}
+  ignore: {}
   namespace: fleet-mc-manifest-example
   resources:
   - content: |
@@ -232,6 +234,8 @@ spec:
   - clusterSelector:
       matchLabels:
         env: dev
+    correctDrift: {}
+    ignore: {}
     name: dev
     yaml:
       overlays:
@@ -239,6 +243,8 @@ spec:
   - clusterSelector:
       matchLabels:
         env: test
+    correctDrift: {}
+    ignore: {}
     name: test
     yaml:
       overlays:
@@ -246,6 +252,8 @@ spec:
   - clusterSelector:
       matchLabels:
         env: prod
+    correctDrift: {}
+    ignore: {}
     name: prod
     yaml:
       overlays:

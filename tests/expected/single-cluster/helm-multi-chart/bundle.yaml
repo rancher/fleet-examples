@@ -6,10 +6,12 @@ metadata:
   name: test-guestbook
   namespace: fleet-local
 spec:
+  correctDrift: {}
   helm:
     releaseName: guestbook
     values:
       replicas: 2
+  ignore: {}
   namespace: fleet-multi-chart-helm-example
   resources:
   - content: |
@@ -202,6 +204,8 @@ spec:
     name: values.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default
 apiVersion: fleet.cattle.io/v1alpha1
 kind: Bundle
@@ -211,6 +215,7 @@ metadata:
   name: test-rancher-monitoring
   namespace: fleet-local
 spec:
+  correctDrift: {}
   defaultNamespace: cattle-monitoring-system
   diff:
     comparePatches:
@@ -231,6 +236,7 @@ spec:
     releaseName: rancher-monitoring
     repo: https://charts.rancher.io/
     version: 100.1.2+up19.0.3
+  ignore: {}
   resources:
   - content: H4sIAAAAAAAA/+RabW8cOXL+rl9RsD+sBMz0jL1AzvYlAXSyk/h2bQujlYFgsVhyumumuWKTHZI944HX/z0ovjVbGsleO8kGuE/SdPOlqvhU1VPFfgwXLVdblHp7ci4lKO34WiLU/qmFjdEduBZh6K0zyDu4NLpD1+Jg4V2PhjttaLRxsBdSwhqBNw024DS4VljYCInVycnjx/DzJa9v+BbhPRortILl8heYw9Pl0+V8+Zf5k+cnjx8/hnOafTIPf+HnYrvzhvcOzS+nrXO9fbFYbIVrh3VV627RouwWXgy7cAZx0XHr0CysV2fR51XmPKxyBtwChwZ7VA2q+hAE/iJFnQYupd7DYNFY+okfem0R6sE63UGHzoi6MF6DGz5IVy4plHVc1fSul/qADawPwWB+j5M5rLDTOwRWyK6jHItaIldDP69NY6sD7yQDrpp7xo5jskDHdMuKByWFgg3faQN6A78N1sFghdr62Rerl9AIg7XTxtvNKyNlemmrfH526HttHGy0AWZu8EIrZ7SUaN5wxbdo2Mw/v6pbbAaZf18a/eHAZkErc4OvXN0wuBxsS2+8vY0j49PCnVbCaUPi3TyzUOuu1wqVs7AXrhUKVj+8gloOhAh7VDQO7OZ7e4Vmh+bINuBa7tI2Fm6+t2D92HKvU3YzrI8rSC9KDb1W9DCoeZbkpIUflNNPOm+6e3c5b7qJKeOziTnjs28zaVzkM+KaG3x635E/vX3mT28f+tNvE5FWKOV75Z104iXV+O9Vj3UltkobfMs7tD2v8QqlB7lloBXsuBwwuJIX0aID4aMB23BpkZELR1ev4CfyZT/Fu4cZamfvCwYRTDkUkAJFMPAu5iXzCzB1Wz4GG4GySYpzdYDaIHfYAGFa1PgmGAu0gUvdpF8XKxugLRxYv5aNgvcGd96W0/nWKz6uEGNcrdVGbAeTAkSpWm14j3kEdxT4nU6nBwatHkyNFvTgrGiCilnDIJ5r8QDcFMFSqL+C2AD3IRgUYuPjcMt3CFrhbbUXpdZ3t452s7hDw+W4u4VTO9QtpQqSapzgpSKBBhtSXVrztXWC4qFPLeGcY3D0mp/Ngi621YNsKNsCKp9w/Wnr3pvHCkoMwsHejzL4X4MIZ9/RXuFoP6vmxQp6ss0RU4Z1pbjBQvYKVihxx5ULaLKwR4PApdUw9I1Hk1ATCK9enb9886rqmjHgs63hG654RWdZc1M13LZrzSkJWeSmbrN3Me86hVexAPzRdMF99AZYzZ2TOB8XYwTUEii90TvhA1Cwba2V43QQUsKFR98b3tvkWgiSr1FmcX/NK4dMmrhMEDllZ4R/D8PhZRYEoqI+JgU72duy2R5rsRFkQBsMmtyTS622hb8HgHeoXAXEx5IlsnilLh7ta0QFBqWu/YIF50grlRDQt9wrSzYe4BhX57zphKLoXDzDRrgUo4vHO4F7lsVlFyHsrrREy0bC5Bf0nsqtFVsFhgbQ70ylhHJoeO2CUY4RlYtVMDARLq7olIIP+UOy6ByFIVa9D8DaSr3msjJrXle0iRepCvZncBolfgHMmQHZWQWvyXndoRc1l7D62/kFrTn0MzjoATqxbR3syUmC0EQdCmX/JlQj1NarvBaqIXNbHNXkcDWsf8O6IJHJrSmdDD1FaLIlsFuRl8ECWBF5w+9sntXgLU3HEqaPrxityc4lGtfFDOwjP6+NtiGyxSxZwevN5yzHt1uDW+7Q//w3bchEjIAdT2EWdS4hEPwpT6VD1imk9lg7sRuDymRe9ur1AX4Y1mgUOrRHwRpSzFHMxlceuneQG1/eAvBXIJdKHx/KNdBOsMgHWRt08XDY6L8s5R2f1GOEKwSzB+uwY6O3/v9C/R+D+x9U9a57dLoRmwNEY8KiDIROpIKzjHszSMn7oAcDpQPEyXG1Co4CKsfco5ga3x6H1fj+fw9Zn8FSkS3/L0DkTRDMT8ukVMkt9ERi9aagtH8K4I7a4y7SIr9aJMiVQCMKlZgFLf33q3dvMwns0Vhh3TGSoNUkzma8JVQkaglSdMKFAocdSX4EwiKyz2JcLyqruHkq/ubWcYfz2JKgp0o3OE+lFMuSjKzLYddLsgAzXNUtml/jG1u5rpfe9uWuwSqrMDZEer3Z0PMEYaFAmyY8aVH2uRwIbH/PD8BpQes5tUHVoMGGjMaJIxNBMcSHCiZa0tAs8EMFlMENGlSZB6c5BNrQseIK8APveukpJ4cryeubKGrufghbTLXAqe70JCthreSzx/sgvRE7mm5wK6wzAi3sBKecaHQz1LQPB4X7WNR5KERXDECuQrh8GdRfhWUOzCs2o7KIdpOCUnHIu4PTHXfkafJATt+b0PYiE1NM2aE5gOj4NhY0kewGTz2CEKa2Qn1glJ0/HJI/3ClgkxvsW98bC3YUNtTN0VrZtxgkBisUsNjJi+R8kSxuF37jmLKjjT3X7gfjO3A5yGSZhI8LHb/xFVWvrRUxlPoYGoX8zsL1a3Ct0cOWKpCgmUdK64/ZDuueuxZOsdpWCezf2TDwLFfNU3tEZZ0GKaxDRYj2MGDPls+WDE5jvcPoIdVFzBc7QcnWuZ756hF5ExQbIc9sYIfsbAb7VtRtriz2LUa3SvaPQwMWlN5Dr4UPrLOx1Nlos6fqgqolqjfROpsyalpn1CtoQ0DV04IwKPf9crlkX4+bIux9BXRGrIy9nf952Iwy/gnIefJNyNnj+iHU3GpLfQtwiqW+GDvPl8+X98VN4kdqCxevr+Cq5sqGPkvLTYMKm5RcKXpNY+nf9TocSM9d3eK0DZeU5HWtB/WlRNWzvYdohU/5qS/uOwNbw5ucboJgSYZIBKUE9hbdXpubSy1FfWDJkt8kSeXvVd4QmQmF/nWRQ0N+pMGhdXDsCiE0aiIZKGRgRfL0UgpdxVFVjcbn7eYFxEc0WmmXO4DswqcX740n8yzfFKxTshIwEuR8/mS5DII9/8vzf3pgBd7hux0aIxq8V5HoheHWi5xCYY3WcnNIvb+791Df2bzJ9epHOGXkdi8Wi48fIRHocm/49GleNJ5vjfInVQyt7K5mZyTJmlNG1ptNcuTQFPN5mpzW90G7qPpsonsU1IvXDdYFV19jHv6g0SYiBcvdi8J/XPtdJCbbgNUdTluXkcfnlmjM2ekleQ/GSwlffNzXXj2Z+2yVnhdBhoZvNIUPiii3m/W+gRsO5Qs6g7eqIK2cUEPZIc4Xm/sW1dddo4xtohcnAABzYLU2OG+UZS9SxRIwld7zXszDBQmNiDbIb/2MOl8xzVOH657F6JlER68LBMWnI5Lg0yeKKC+FDdXx1MyjAW1x5QOnt0pqsUmt++Ysazsp1z6nRDZ4ioCTCehvxx4cYvMV28PjPP04MmbMFUnJRAbZaIQrZ7jDbchWbIWpQUAVcbhGmljM43CNZEjrhvqGEmXKjv5K5/K9pyXOcd95dzptem+4+mc7Af7vfW6T/m4Gif+aAPhWyGuL9j9QduHkvZC5jMwXeRWcE3MzaAfpZrBHkFrfhJtiKX3zNPAvdQj3CIGKyMnVUYEMw10b6mQV7tJJeq3If/l2O9ar+VbCoERuMefOSa66zwy+gLOTCu5o0s4lcaJzuXbvhDEUN2Kk1EZsheIyrexPLn0mcEeMNbZ8J8IHAyOzGPsp9Oz+HpwvgYk94zyxppZsXrDY8QMEpU3HJdA5ghQbrA914OZhaT/GxtbeT140hRsxtqB43xvNA/0NV3lS5k9eIuWaStdohaEfIcUu93EiM6b6GbboQIcE1AS+zoG1JGEEN4v3eqNwoJU80ESb74OKadEMzDflD3qY3NqNa4T2oP8gBBt/gaCAq7S1SqvM0kUj48UZVPFDknfqOo/8K7R6TyrNgrGEhSbFwQLThXd74GrrceNXp3Oa3vgGobI4kS9EFQorFsn1mAnvxT6zWA9GuMOFVg4/OBY7aLphuV8zvfFI6GQfH5lBndu3Wq20do9ewCNnBnw0g/D82qKhh0+Wy+WjT4HyGuwlr8vbTt8j7W1/bfG8789NR6y5/ITmzsjzTIbtv3z8xCY9smNlZwihZVNLH61+Ql3XaLT+ejkVUFdY17rz10tJwIKP+/h1eXVpK7j2HTtKZVzu+YE201QiOx0vC0NkKeeGO+WiWUu296Tv6jJ+KCQP0z4wJg6ULngmJ5s70PdTjFxQhhjuvMXIINb5zxAM9gYtKhcqrdyz8+4er4jXRa9xfQjh5JTiEHO9JPY4xh6ecn/84sCj30sO/3n+5ses5b0ALZoo0w8h+DB2/kO3dN9qqkbR2jwrxqT3AvdofLc7kMfg0lxpdej0YNO0MWWOF8f27tcpSTYqOIkshnIeeM4HXlUSR6Sly8Y+WconGaIQtZMQWUSs69MiuQsO169jCBwFHjVGRehNa4Z+CDdI9mnpGEOHJ+a1m2cWzi9fQ/hiawbrwfkQSbBdpOON7XvvMTk5iRBLe8l9UPL0u1TKY2jPYwcnu1H6BqOQhs4v9HR8m4e91Q1eauNYaimcfQUYmrJdNl7607Eke0bzpjVaqjp6vsXqvwMAAP//9sLvjswpAAA=
     encoding: base64+gz
@@ -1557,6 +1563,8 @@ spec:
     name: fleet.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default
 apiVersion: fleet.cattle.io/v1alpha1
 kind: Bundle
@@ -1566,12 +1574,14 @@ metadata:
   name: test-rancher-monitoring-crd
   namespace: fleet-local
 spec:
+  correctDrift: {}
   defaultNamespace: cattle-monitoring-system
   helm:
     chart: rancher-monitoring-crd
     releaseName: rancher-monitoring-crd
     repo: https://charts.rancher.io/
     version: 100.1.2+up19.0.3
+  ignore: {}
   resources:
   - content: H4sIAAAAAAAA/3yQsU4DMQyG9zyF1RVduIOJrLCwMrBbiduzlLMj263Ut0cUgRhOHW39nz/rRxENDFbxkgAqBnY95YoRnTLrYyULPjK1AoZSV7Ld2MqtkRQ4hJ3psBsR3MgHVirws5w2FQ41ltPkVw/adjmjTug0ffN/T/xnq7WEgz/JnFUKXJbUyKvxiNv8Lh7Yu0OsBK8fbw5HtZ1DOd1VxHVQARyjc701li6/xmWe85KfHs5jeclzfk5fAQAA//+bbBLeVwEAAA==
     encoding: base64+gz
@@ -1626,4 +1636,6 @@ spec:
     name: fleet.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default

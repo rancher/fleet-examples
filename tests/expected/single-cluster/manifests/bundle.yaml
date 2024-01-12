@@ -6,6 +6,8 @@ metadata:
   name: test
   namespace: fleet-local
 spec:
+  correctDrift: {}
+  ignore: {}
   namespace: fleet-manifest-example
   resources:
   - content: |
@@ -172,4 +174,6 @@ spec:
     name: services/redis-slave-service.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default
