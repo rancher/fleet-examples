@@ -1,9 +1,9 @@
 name: CI v0.6
 
 on:
-  schedule:
-    - cron: '0 5 * * *'
   pull_request:
+    branches:
+      - 'releases/v0.6'
   workflow_dispatch:
 
 jobs:
