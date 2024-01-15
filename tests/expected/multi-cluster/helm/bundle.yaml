@@ -6,6 +6,8 @@ metadata:
   name: test
   namespace: fleet-default
 spec:
+  correctDrift: {}
+  ignore: {}
   namespace: fleet-mc-helm-example
   resources:
   - content: |
@@ -234,22 +236,28 @@ spec:
   - clusterSelector:
       matchLabels:
         env: dev
+    correctDrift: {}
     helm:
       values:
         replication: false
+    ignore: {}
     name: dev
   - clusterSelector:
       matchLabels:
         env: test
+    correctDrift: {}
     helm:
       values:
         replicas: 3
+    ignore: {}
     name: test
   - clusterSelector:
       matchLabels:
         env: prod
+    correctDrift: {}
     helm:
       values:
         replicas: 3
         serviceType: LoadBalancer
+    ignore: {}
     name: prod

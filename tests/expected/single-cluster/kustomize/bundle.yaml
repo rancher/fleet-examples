@@ -6,6 +6,8 @@ metadata:
   name: test
   namespace: fleet-local
 spec:
+  correctDrift: {}
+  ignore: {}
   kustomize: {}
   namespace: fleet-kustomize-example
   resources:
@@ -215,4 +217,6 @@ spec:
     name: overlays/dev/redis-slave-service.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default

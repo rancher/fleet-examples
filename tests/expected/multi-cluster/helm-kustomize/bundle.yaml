@@ -6,8 +6,10 @@ metadata:
   name: test
   namespace: fleet-default
 spec:
+  correctDrift: {}
   helm:
     chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
+  ignore: {}
   namespace: fleet-mc-helm-kustomize-example
   resources:
   - content: |
@@ -289,18 +291,24 @@ spec:
   - clusterSelector:
       matchLabels:
         env: dev
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/dev
     name: dev
   - clusterSelector:
       matchLabels:
         env: test
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/test
     name: test
   - clusterSelector:
       matchLabels:
         env: prod
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/prod
     name: prod

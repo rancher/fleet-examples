@@ -6,6 +6,8 @@ metadata:
   name: test
   namespace: fleet-default
 spec:
+  correctDrift: {}
+  ignore: {}
   namespace: fleet-mc-kustomize-example
   resources:
   - content: |
@@ -281,18 +283,24 @@ spec:
   - clusterSelector:
       matchLabels:
         env: dev
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/dev
     name: dev
   - clusterSelector:
       matchLabels:
         env: test
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/test
     name: test
   - clusterSelector:
       matchLabels:
         env: prod
+    correctDrift: {}
+    ignore: {}
     kustomize:
       dir: overlays/prod
     name: prod

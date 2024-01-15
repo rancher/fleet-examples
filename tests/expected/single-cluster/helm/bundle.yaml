@@ -6,10 +6,12 @@ metadata:
   name: test
   namespace: fleet-local
 spec:
+  correctDrift: {}
   helm:
     releaseName: guestbook
     values:
       replicas: 2
+  ignore: {}
   namespace: fleet-helm-example
   resources:
   - content: |
@@ -221,4 +223,6 @@ spec:
     name: values.yaml
   targets:
   - clusterGroup: default
+    correctDrift: {}
+    ignore: {}
     name: default
