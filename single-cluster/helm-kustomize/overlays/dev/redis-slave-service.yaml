@@ -1,7 +1,0 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: redis-slave
-spec:
-  selector:
-    role: master
