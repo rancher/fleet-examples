@@ -96,32 +96,32 @@ spec:
       resources:
       - frontend-deployment.yaml
       - frontend-service.yaml
-      - redis-master-deployment.yaml
-      - redis-master-service.yaml
-      - redis-slave-deployment.yaml
-      - redis-slave-service.yaml
+      - redis-leader-deployment.yaml
+      - redis-leader-service.yaml
+      - redis-follower-deployment.yaml
+      - redis-follower-service.yaml
     name: base/kustomization.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: redis-master
+        name: redis-leader
       spec:
         selector:
           matchLabels:
             app: redis
-            role: master
+            role: leader
             tier: backend
         replicas: 1
         template:
           metadata:
             labels:
               app: redis
-              role: master
+              role: leader
               tier: backend
           spec:
             containers:
-            - name: master
+            - name: leader
               image: registry.k8s.io/redis:e2e
               resources:
                 requests:
@@ -129,15 +129,15 @@ spec:
                   memory: 100Mi
               ports:
               - containerPort: 6379
-    name: base/redis-master-deployment.yaml
+    name: base/redis-leader-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
       metadata:
-        name: redis-master
+        name: redis-leader
         labels:
           app: redis
-          role: master
+          role: leader
           tier: backend
       spec:
         ports:
@@ -145,55 +145,55 @@ spec:
           targetPort: 6379
         selector:
           app: redis
-          role: master
+          role: leader
           tier: backend
-    name: base/redis-master-service.yaml
+    name: base/redis-leader-service.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: redis-slave
+        name: redis-follower
       spec:
         selector:
           matchLabels:
             app: redis
-            role: slave
+            role: follower
             tier: backend
         replicas: 2
         template:
           metadata:
             labels:
               app: redis
-              role: slave
+              role: follower
               tier: backend
           spec:
             containers:
-            - name: slave
-              image: gcr.io/google_samples/gb-redisslave:v2
+            - name: follower
+              image: us-docker.pkg.dev/google-samples/containers/gke/gb-redis-follower:v2
               resources:
                 requests:
                   cpu: 100m
                   memory: 100Mi
               ports:
               - containerPort: 6379
-    name: base/redis-slave-deployment.yaml
+    name: base/redis-follower-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
       metadata:
-        name: redis-slave
+        name: redis-follower
         labels:
           app: redis
-          role: slave
+          role: follower
           tier: backend
       spec:
         ports:
         - port: 6379
         selector:
           app: redis
-          role: slave
+          role: follower
           tier: backend
-    name: base/redis-slave-service.yaml
+    name: base/redis-follower-service.yaml
   - content: |
       namespace: fleet-mc-kustomize-example
       targetCustomizations:
@@ -222,26 +222,26 @@ spec:
       resources:
       - ../../base
       patchesStrategicMerge:
-      - redis-slave-deployment.yaml
-      - redis-slave-service.yaml
+      - redis-follower-deployment.yaml
+      - redis-follower-service.yaml
     name: overlays/dev/kustomization.yaml
   - content: |
       kind: Deployment
       apiVersion: apps/v1
       metadata:
-        name: redis-slave
+        name: redis-follower
       spec:
         replicas: 0
-    name: overlays/dev/redis-slave-deployment.yaml
+    name: overlays/dev/redis-follower-deployment.yaml
   - content: |
       kind: Service
       apiVersion: v1
       metadata:
-        name: redis-slave
+        name: redis-follower
       spec:
         selector:
-          role: master
-    name: overlays/dev/redis-slave-service.yaml
+          role: leader
+    name: overlays/dev/redis-follower-service.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment

@@ -57,25 +57,25 @@ metadata:
     objectset.rio.cattle.io/id: -test
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
-  name: redis-master
+  name: redis-leader
   namespace: fleet-mc-kustomize-example
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: redis
-      role: master
+      role: leader
       tier: backend
   template:
     metadata:
       labels:
         app: redis
-        role: master
+        role: leader
         tier: backend
     spec:
       containers:
       - image: registry.k8s.io/redis:e2e
-        name: master
+        name: leader
         ports:
         - containerPort: 6379
         resources:
@@ -92,9 +92,9 @@ metadata:
   labels:
     app: redis
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
-    role: master
+    role: leader
     tier: backend
-  name: redis-master
+  name: redis-leader
   namespace: fleet-mc-kustomize-example
 spec:
   ports:
@@ -102,7 +102,7 @@ spec:
     targetPort: 6379
   selector:
     app: redis
-    role: master
+    role: leader
     tier: backend
 
 ---
@@ -113,25 +113,25 @@ metadata:
     objectset.rio.cattle.io/id: -test
   labels:
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
-  name: redis-slave
+  name: redis-follower
   namespace: fleet-mc-kustomize-example
 spec:
   replicas: 0
   selector:
     matchLabels:
       app: redis
-      role: slave
+      role: follower
       tier: backend
   template:
     metadata:
       labels:
         app: redis
-        role: slave
+        role: follower
         tier: backend
     spec:
       containers:
-      - image: gcr.io/google_samples/gb-redisslave:v2
-        name: slave
+      - image: us-docker.pkg.dev/google-samples/containers/gke/gb-redis-follower:v2
+        name: follower
         ports:
         - containerPort: 6379
         resources:
@@ -148,14 +148,14 @@ metadata:
   labels:
     app: redis
     objectset.rio.cattle.io/hash: c0fae66aeeea5c9703d7410307d74609c272103d
-    role: slave
+    role: follower
     tier: backend
-  name: redis-slave
+  name: redis-follower
   namespace: fleet-mc-kustomize-example
 spec:
   ports:
   - port: 6379
   selector:
     app: redis
-    role: master
+    role: leader
     tier: backend

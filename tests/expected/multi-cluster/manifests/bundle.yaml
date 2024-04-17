@@ -123,12 +123,12 @@ spec:
           app: guestbook
           tier: frontend
     name: frontend-service.yaml
-  - name: overlays/noreplication/redis-slave-deployment.yaml
+  - name: overlays/noreplication/redis-follower-deployment.yaml
   - content: |
       spec:
         selector:
-          role: master
-    name: overlays/noreplication/redis-slave-service_patch.yaml
+          role: leader
+    name: overlays/noreplication/redis-follower-service_patch.yaml
   - content: |
       spec:
         replicas: 3
@@ -141,23 +141,23 @@ spec:
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: redis-master
+        name: redis-leader
       spec:
         selector:
           matchLabels:
             app: redis
-            role: master
+            role: leader
             tier: backend
         replicas: 1
         template:
           metadata:
             labels:
               app: redis
-              role: master
+              role: leader
               tier: backend
           spec:
             containers:
-            - name: master
+            - name: leader
               image: registry.k8s.io/redis:e2e
               resources:
                 requests:
@@ -165,15 +165,15 @@ spec:
                   memory: 100Mi
               ports:
               - containerPort: 6379
-    name: redis-master-deployment.yaml
+    name: redis-leader-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
       metadata:
-        name: redis-master
+        name: redis-leader
         labels:
           app: redis
-          role: master
+          role: leader
           tier: backend
       spec:
         ports:
@@ -181,55 +181,55 @@ spec:
           targetPort: 6379
         selector:
           app: redis
-          role: master
+          role: leader
           tier: backend
-    name: redis-master-service.yaml
+    name: redis-leader-service.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: redis-slave
+        name: redis-follower
       spec:
         selector:
           matchLabels:
             app: redis
-            role: slave
+            role: follower
             tier: backend
         replicas: 2
         template:
           metadata:
             labels:
               app: redis
-              role: slave
+              role: follower
               tier: backend
           spec:
             containers:
-            - name: slave
-              image: gcr.io/google_samples/gb-redisslave:v2
+            - name: follower
+              image: us-docker.pkg.dev/google-samples/containers/gke/gb-redis-follower:v2
               resources:
                 requests:
                   cpu: 100m
                   memory: 100Mi
               ports:
               - containerPort: 6379
-    name: redis-slave-deployment.yaml
+    name: redis-follower-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
       metadata:
-        name: redis-slave
+        name: redis-follower
         labels:
           app: redis
-          role: slave
+          role: follower
           tier: backend
       spec:
         ports:
         - port: 6379
         selector:
           app: redis
-          role: slave
+          role: follower
           tier: backend
-    name: redis-slave-service.yaml
+    name: redis-follower-service.yaml
   targets:
   - clusterSelector:
       matchLabels:
