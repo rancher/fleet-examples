@@ -76,7 +76,7 @@ spec:
           spec:
             containers:
             - name: master
-              image: registry.k8s.io/redis:e2e
+              image: redis
               resources:
                 requests:
                   cpu: 100m
@@ -105,7 +105,7 @@ spec:
           spec:
             containers:
             - name: slave
-              image: gcr.io/google_samples/gb-redisslave:v2
+              image: redis
               resources:
                 requests:
                   cpu: 100m
