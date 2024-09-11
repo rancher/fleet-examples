@@ -4,10 +4,18 @@ targetCustomizations:
   helm:
     values:
       image:
-        tag: 2022
+        tag: ltsc2022
   clusterSelector:
     matchLabels:
       windows.version: win2022
+- name: win2019
+  helm:
+    values:
+      image:
+        tag: ltsc2019
+  clusterSelector:
+    matchLabels:
+      windows.version: win2019
 - name: win2004
   helm:
     values:
