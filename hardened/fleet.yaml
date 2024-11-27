@@ -1,0 +1,4 @@
+namespace: hardened-fleet-deployments
+
+namespaceLabels:
+  pod-security.kubernetes.io/enforce: baseline
