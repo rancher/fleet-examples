@@ -1,6 +1,0 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: frontend
-spec:
-  type: LoadBalancer

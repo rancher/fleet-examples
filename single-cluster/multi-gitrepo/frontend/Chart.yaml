@@ -1,5 +1,0 @@
-apiVersion: v2
-name: guestbook-frontend
-description: Sample application frontend
-version: 0.0.0
-appVersion: 0.0.0

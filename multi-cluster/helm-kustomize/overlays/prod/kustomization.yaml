@@ -1,3 +1,0 @@
-patchesStrategicMerge:
-- frontend-deployment.yaml
-- frontend-service.yaml

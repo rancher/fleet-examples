@@ -1,5 +1,0 @@
-bases:
-- ../../base
-patchesStrategicMerge:
-- redis-slave-deployment.yaml
-- redis-slave-service.yaml

@@ -1,5 +1,0 @@
-resources:
-- ../../base
-patchesStrategicMerge:
-- frontend-deployment.yaml
-- frontend-service.yaml

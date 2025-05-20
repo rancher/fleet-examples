@@ -1,5 +1,0 @@
-apiVersion: v2
-name: windows-app
-description: Sample Windows application
-version: 0.0.0
-appVersion: 0.0.0
