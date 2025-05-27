@@ -83,7 +83,7 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: gcr.io/google-samples/gb-frontend:v4
+      - image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
         name: php-redis
         ports:
         - containerPort: 80
@@ -151,7 +151,7 @@ spec:
         tier: backend
     spec:
       containers:
-      - image: gcr.io/google_samples/gb-redisslave:v1
+      - image: redis
         name: slave
         ports:
         - containerPort: 6379
