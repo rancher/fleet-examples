@@ -5,6 +5,6 @@
 
 namespace: fleet-helm-kustomize-example
 helm:
-  chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
+  chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.1.tgz
 kustomize:
   dir: overlays/dev

@@ -8,17 +8,17 @@ metadata:
 spec:
   correctDrift: {}
   helm:
-    chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
+    chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.1.tgz
   ignore: {}
   namespace: fleet-mc-helm-kustomize-example
   resources:
   - content: |
       apiVersion: v2
-      appVersion: 0.0.0
+      appVersion: 0.0.1
       description: Sample application
       name: guestbook
-      version: 0.0.0
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/Chart.yaml
+      version: 0.0.1
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/Chart.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment
@@ -38,14 +38,14 @@ spec:
           spec:
             containers:
             - name: php-redis
-              image: gcr.io/google-samples/gb-frontend:v4
+              image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
               resources:
                 requests:
                   cpu: 100m
                   memory: 100Mi
               ports:
               - containerPort: 80
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/frontend-deployment.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/frontend-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
@@ -61,7 +61,7 @@ spec:
         selector:
           app: guestbook
           tier: frontend
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/frontend-service.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/frontend-service.yaml
   - content: |
       apiVersion: apps/v1
       kind: Deployment
@@ -90,7 +90,7 @@ spec:
                   memory: 100Mi
               ports:
               - containerPort: 6379
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/redis-master-deployment.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/redis-master-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
@@ -108,7 +108,7 @@ spec:
           app: redis
           role: master
           tier: backend
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/redis-master-service.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/redis-master-service.yaml
   - content: |
       {{ if .Values.replication }}
       apiVersion: apps/v1
@@ -131,7 +131,7 @@ spec:
           spec:
             containers:
             - name: slave
-              image: gcr.io/google_samples/gb-redisslave:v1
+              image: redis
               resources:
                 requests:
                   cpu: 100m
@@ -139,7 +139,7 @@ spec:
               ports:
               - containerPort: 6379
       {{ end }}
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/redis-slave-deployment.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/redis-slave-deployment.yaml
   - content: |
       apiVersion: v1
       kind: Service
@@ -160,12 +160,12 @@ spec:
           role: master
           {{ end }}
           tier: backend
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/templates/redis-slave-service.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/templates/redis-slave-service.yaml
   - content: |
       replication: true
       replicas: 1
       serviceType: NodePort
-    name: .chart/9c24c039ba1d12c3cf62ee27ea13445e44c58e8d9e1df45d0a94a1bcc5a81566/guestbook/values.yaml
+    name: .chart/ce648b1a536ac8c844ef58f2c3383e621a823acb2be15fa4b0d1cf053709a787/guestbook/values.yaml
   - content: |
       # Multi-Cluster Helm Kustomize Example
 
@@ -209,7 +209,7 @@ spec:
   - content: |
       namespace: fleet-mc-helm-kustomize-example
       helm:
-        chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.0.tgz
+        chart: https://github.com/rancher/fleet-examples/releases/download/example/guestbook-0.0.1.tgz
       targetCustomizations:
       - name: dev
         clusterSelector:
