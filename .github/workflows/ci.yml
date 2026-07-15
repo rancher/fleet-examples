@@ -2,7 +2,7 @@ name: CI
 
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 5 * * 0'
   pull_request:
   workflow_dispatch:
 
