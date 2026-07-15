@@ -26,12 +26,31 @@ jobs:
       -
         name: Resolve Fleet Version
         id: resolve-version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           VERSION="${{ matrix.fleet_version }}"
           if [ "$VERSION" = "latest" ]; then
-            VERSION=$(curl -s https://api.github.com/repos/rancher/fleet/releases/latest | jq -r '.tag_name')
+            VERSION=$(curl -fsSL \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H 'Accept: application/vnd.github+json' \
+              https://api.github.com/repos/rancher/fleet/releases/latest | jq -r '.tag_name')
           elif [ "$VERSION" = "latest-prerelease" ]; then
-            VERSION=$(curl -s https://api.github.com/repos/rancher/fleet/releases | jq -r '.[0].tag_name')
+            VERSION=$(curl -fsSL \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H 'Accept: application/vnd.github+json' \
+              'https://api.github.com/repos/rancher/fleet/releases?per_page=100' | jq -r '
+                def version_pattern: "^v(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-(?<pre>[A-Za-z]+)\\.(?<pre_num>[0-9]+)$";
+                [.[] | select(.prerelease and (.draft | not) and (.tag_name | test(version_pattern))) | .tag_name]
+                | if length == 0 then
+                    error("No published prerelease tags match the supported version format")
+                  else
+                    max_by(
+                      capture(version_pattern) as $version
+                      | [$version.major|tonumber, $version.minor|tonumber, $version.patch|tonumber, (if $version.pre == "alpha" then 0 elif $version.pre == "beta" then 1 elif $version.pre == "rc" then 2 else 3 end), $version.pre_num|tonumber]
+                    )
+                  end')
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       -
