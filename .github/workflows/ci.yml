@@ -2,19 +2,21 @@ name: CI
 
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 5 * * 0'
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     strategy:
       fail-fast: false
       matrix:
         fleet_version:
-          - "v0.13.8"
+          - "v0.13.13"
           - "latest"
           - "latest-prerelease"
 
@@ -23,15 +25,35 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       -
         name: Resolve Fleet Version
         id: resolve-version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           VERSION="${{ matrix.fleet_version }}"
           if [ "$VERSION" = "latest" ]; then
-            VERSION=$(curl -s https://api.github.com/repos/rancher/fleet/releases/latest | jq -r '.tag_name')
+            VERSION=$(curl -fsSL \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H 'Accept: application/vnd.github+json' \
+              https://api.github.com/repos/rancher/fleet/releases/latest | jq -r '.tag_name')
           elif [ "$VERSION" = "latest-prerelease" ]; then
-            VERSION=$(curl -s https://api.github.com/repos/rancher/fleet/releases | jq -r '.[0].tag_name')
+            VERSION=$(curl -fsSL \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H 'Accept: application/vnd.github+json' \
+              'https://api.github.com/repos/rancher/fleet/releases?per_page=100' | jq -r '
+                def version_pattern: "^v(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-(?<pre>[A-Za-z]+)\\.(?<pre_num>[0-9]+)$";
+                [.[] | select(.prerelease and (.draft | not) and (.tag_name | test(version_pattern))) | .tag_name]
+                | if length == 0 then
+                    error("No published prerelease tags match the supported version format")
+                  else
+                    max_by(
+                      capture(version_pattern) as $version
+                      | [$version.major|tonumber, $version.minor|tonumber, $version.patch|tonumber, (if $version.pre == "alpha" then 0 elif $version.pre == "beta" then 1 elif $version.pre == "rc" then 2 else 3 end), $version.pre_num|tonumber]
+                    )
+                  end')
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       -
@@ -45,8 +67,10 @@ jobs:
             ${{ runner.os }}-k3d-
       -
         name: Install k3d
+        env:
+          K3D_CACHE_HIT: ${{ steps.cache-k3d.outputs.cache-hit }}
         run: |
-          if [ "${{ steps.cache-k3d.outputs.cache-hit }}" != "true" ]; then
+          if [ "$K3D_CACHE_HIT" != "true" ]; then
             bash .github/scripts/install-k3d.sh
           else
             echo "Using cached k3d CLI"
@@ -61,16 +85,18 @@ jobs:
           key: ${{ runner.os }}-fleet-cli-${{ steps.resolve-version.outputs.version }}
       -
         name: Download CLI
+        env:
+          FLEET_CACHE_HIT: ${{ steps.fleet-cli-cache.outputs.cache-hit }}
+          FLEET_VERSION: ${{ steps.resolve-version.outputs.version }}
         run: |
           mkdir -p /home/runner/.local/bin
-          if [ "${{ steps.fleet-cli-cache.outputs.cache-hit }}" != "true" ]; then
-            FLEET_VER="${{ steps.resolve-version.outputs.version }}"
-            FLEET_VER_TRIM="${FLEET_VER#v}"
+          if [ "$FLEET_CACHE_HIT" != "true" ]; then
+            FLEET_VER_TRIM="${FLEET_VERSION#v}"
             curl --silent --fail --location \
-              "https://github.com/rancher/fleet/releases/download/${FLEET_VER}/fleet_${FLEET_VER_TRIM}_checksums.txt" \
+              "https://github.com/rancher/fleet/releases/download/${FLEET_VERSION}/fleet_${FLEET_VER_TRIM}_checksums.txt" \
               -o /tmp/fleet_checksums.txt
             curl --silent --fail --location \
-              "https://github.com/rancher/fleet/releases/download/${FLEET_VER}/fleet-linux-amd64" \
+              "https://github.com/rancher/fleet/releases/download/${FLEET_VERSION}/fleet-linux-amd64" \
               -o /tmp/fleet-linux-amd64
             (cd /tmp && grep "  fleet-linux-amd64$" fleet_checksums.txt | sha256sum --check --strict -)
             install -m 0755 /tmp/fleet-linux-amd64 /home/runner/.local/bin/fleet
@@ -81,6 +107,8 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       -
         name: Set up k3d cluster
+        env:
+          FLEET_VERSION: ${{ steps.resolve-version.outputs.version }}
         run: |
           # Create a minimal cluster (no load balancer needed)
           k3d cluster create fleet-test --no-lb --wait --timeout 120s
@@ -89,10 +117,9 @@ jobs:
           # Install Fleet CRDs for the exact CLI version under test so that
           # `kubectl apply` and `fleet target` can use the Cluster CRD.
           # Note: fleet does not publish checksums for Helm chart tarballs.
-          FLEET_VER="${{ steps.resolve-version.outputs.version }}"
-          FLEET_VER_TRIM="${FLEET_VER#v}"
+          FLEET_VER_TRIM="${FLEET_VERSION#v}"
           curl --silent --fail --location \
-            "https://github.com/rancher/fleet/releases/download/${FLEET_VER}/fleet-crd-${FLEET_VER_TRIM}.tgz" \
+            "https://github.com/rancher/fleet/releases/download/${FLEET_VERSION}/fleet-crd-${FLEET_VER_TRIM}.tgz" \
             -o /tmp/fleet-crd.tgz
           tar -xz -O -f /tmp/fleet-crd.tgz fleet-crd/templates/crds.yaml | kubectl apply -f -
 
