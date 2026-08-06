@@ -1,3 +1,4 @@
 replication: true
 replicas: 1
 serviceType: NodePort
+image: "192.168.64.129:5000/my-custom-app:v1"
