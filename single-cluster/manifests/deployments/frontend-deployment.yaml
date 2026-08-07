@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: php-redis
-        image: "192.168.64.129:5000/my-custom-app:v1"
+        image: "image: "192.168.64.129:5000/my-custom-app:v2"
         resources:
           requests:
             cpu: 100m
