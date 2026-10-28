@@ -14,6 +14,15 @@
       "extends": [
         "github>rancher/renovate-config//rancher-main#release"
       ]
+    },
+    {
+      "description": "Activate automerge for eligible updates",
+      "matchBaseBranches": [
+        "master"
+      ],
+      "extends": [
+        "github>rancher/renovate-config//automerge#release"
+      ]
     }
   ]
 }
